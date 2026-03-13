@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot_arm">
+  <xacro:arg name="controllers_file" default="/tmp/ros2_controllers.yaml"/>
+
+  <material name="blue"><color rgba="0.1 0.2 0.8 1.0"/></material>
+  <material name="gray"><color rgba="0.6 0.6 0.6 1.0"/></material>
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0.1"/>
+      <mass value="10.0"/>
+      <inertia ixx="0.2" ixy="0" ixz="0" iyy="0.2" iyz="0" izz="0.2"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.1"/>
+      <geometry><cylinder radius="0.2" length="0.2"/></geometry>
+      <material name="gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.1"/>
+      <geometry><cylinder radius="0.2" length="0.2"/></geometry>
+    </collision>
+  </link>
+
+  <link name="link1">
+    <inertial><origin xyz="0 0 0.25"/><mass value="4.0"/><inertia ixx="0.05" ixy="0" ixz="0" iyy="0.05" iyz="0" izz="0.01"/></inertial>
+    <visual><origin xyz="0 0 0.25"/><geometry><box size="0.08 0.08 0.5"/></geometry><material name="blue"/></visual>
+    <collision><origin xyz="0 0 0.25"/><geometry><box size="0.08 0.08 0.5"/></geometry></collision>
+  </link>
+
+  <joint name="joint1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <origin xyz="0 0 0.2" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14" effort="50" velocity="1.5"/>
+  </joint>
+
+  <link name="link2">
+    <inertial><origin xyz="0.25 0 0"/><mass value="3.0"/><inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02"/></inertial>
+    <visual><origin xyz="0.25 0 0"/><geometry><box size="0.5 0.07 0.07"/></geometry><material name="blue"/></visual>
+    <collision><origin xyz="0.25 0 0"/><geometry><box size="0.5 0.07 0.07"/></geometry></collision>
+  </link>
+
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0 0 0.5" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="40" velocity="1.5"/>
+  </joint>
+
+  <link name="link3">
+    <inertial><origin xyz="0.22 0 0"/><mass value="2.0"/><inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/></inertial>
+    <visual><origin xyz="0.22 0 0"/><geometry><box size="0.45 0.06 0.06"/></geometry><material name="blue"/></visual>
+    <collision><origin xyz="0.22 0 0"/><geometry><box size="0.45 0.06 0.06"/></geometry></collision>
+  </link>
+
+  <joint name="joint3" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <origin xyz="0.5 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.0" upper="2.0" effort="30" velocity="1.5"/>
+  </joint>
+
+  <link name="gripper_link">
+    <inertial><origin xyz="0.1 0 0"/><mass value="0.8"/><inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/></inertial>
+    <visual><origin xyz="0.1 0 0"/><geometry><box size="0.2 0.08 0.08"/></geometry><material name="gray"/></visual>
+    <collision><origin xyz="0.1 0 0"/><geometry><box size="0.2 0.08 0.08"/></geometry></collision>
+  </link>
+
+  <joint name="joint4" type="revolute">
+    <parent link="link3"/>
+    <child link="gripper_link"/>
+    <origin xyz="0.45 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.0" upper="2.0" effort="20" velocity="2.0"/>
+  </joint>
+
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+    <joint name="joint1"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+    <joint name="joint2"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+    <joint name="joint3"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+    <joint name="joint4"><command_interface name="position"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+  </ros2_control>
+
+  <gazebo>
+    <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+      <parameters>$(arg controllers_file)</parameters>
+    </plugin>
+  </gazebo>
+</robot>

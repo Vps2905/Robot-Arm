@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>robot_arm_simulation</name>
+  <version>0.1.0</version>
+  <description>Robot arm + conveyor simulation in Gazebo with ROS 2 control.</description>
+  <maintainer email="you@example.com">Robot Arm Dev</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>gazebo_ros</depend>
+  <depend>gazebo_dev</depend>
+  <depend>gazebo_ros2_control</depend>
+  <depend>controller_manager</depend>
+  <depend>joint_state_broadcaster</depend>
+  <depend>joint_trajectory_controller</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>xacro</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
